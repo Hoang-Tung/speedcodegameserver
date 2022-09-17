@@ -15,6 +15,8 @@ namespace LetsCreateNetworkGame.OpenGL.Library
         Kick,
         CameraUpdate,
         AddEnemy,
-        AllEnemies
+        AllEnemies,
+        AddMissle,
+        AllMissles
     }
 }

@@ -1,41 +1,24 @@
-﻿//------------------------------------------------------
-// 
-// Copyright - (c) - 2014 - Mille Boström 
-//
-// Youtube channel - http://www.speedcoding.net
-//------------------------------------------------------
-
-using System;
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
 
 namespace LetsCreateNetworkGame.OpenGL.Library.AI.Movement
 {
-    public class RandomMovement : BaseMovement
+    public class MissleMovement : BaseMovement
     {
+        private Direction direction { get; set; }
 
-        private double _frequency;
-        private double _count;
-        private Direction _direction;
-        private Random _rnd;
-
-        public RandomMovement(Position position) : base(position)
+        public MissleMovement(Position position, Direction direction) : base(position)
         {
-            _frequency = 200;
-            _count = 0;
-            _rnd = new Random();
-            _direction = (Direction) _rnd.Next(0, 3);
-            Speed = 1; 
+            this.direction = direction;
+            Speed = 5;
         }
 
         public override void Update(double gameTime)
         {
-            _count += gameTime;
-            if (_count > _frequency)
-            {
-                _direction = (Direction) _rnd.Next(0, 3);
-                _count = 0;
-            }
-
-            switch (_direction)
+            switch (direction)
             {
                 case Direction.Left:
                     Position.XPosition -= Speed;

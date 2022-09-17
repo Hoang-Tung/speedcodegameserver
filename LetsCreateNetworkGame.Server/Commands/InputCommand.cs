@@ -5,6 +5,7 @@
 // Youtube channel - http://www.speedcoding.net
 //------------------------------------------------------
 
+using System;
 using System.Linq;
 using LetsCreateNetworkGame.OpenGL.Library;
 using LetsCreateNetworkGame.Server.Managers;
@@ -35,18 +36,34 @@ namespace LetsCreateNetworkGame.Server.Commands
             {
                 case Keys.Down:
                     y++;
+                    playerAndConnection.Player.direction = OpenGL.Library.Direction.Down;
                     break;
 
                 case Keys.Up:
                     y--;
+                    playerAndConnection.Player.direction = OpenGL.Library.Direction.Up;
                     break;
 
                 case Keys.Left:
                     x--;
+                    playerAndConnection.Player.direction = OpenGL.Library.Direction.Left;
                     break;
 
                 case Keys.Right:
                     x++;
+                    playerAndConnection.Player.direction = OpenGL.Library.Direction.Right;
+                    break;
+
+                case Keys.A:
+                    //var random = new Random();
+                    Position post = new Position(playerAndConnection.Player.Position.XPosition,
+                        playerAndConnection.Player.Position.YPosition,
+                        playerAndConnection.Player.Position.ScreenXPosition,
+                        playerAndConnection.Player.Position.ScreenYPosition,
+                        playerAndConnection.Player.Position.Visible);
+                    gameRoom.AddMissle(post, playerAndConnection.Player.direction);
+                    break;
+                default:
                     break;
             }
 
@@ -56,8 +73,7 @@ namespace LetsCreateNetworkGame.Server.Commands
                 gameRoom.Enemies))
             {
                 managerLogger.AddLogMessage("server", string.Format("collied with enemy", name));
-                var command = PacketFactory.GetCommand(PacketType.Kick);
-                command.Run(managerLogger, server, null, gameRoom.Players.FirstOrDefault(p => p.Player.Username == player.Username), gameRoom);
+                server.KickPlayer(playerAndConnection.Player.Username, gameRoom.GameRoomId);
 
             }
             if (!ManagerCollision.CheckCollision(new Rectangle(position.XPosition + x, position.YPosition + y, 32, 32),
@@ -81,10 +97,10 @@ namespace LetsCreateNetworkGame.Server.Commands
                     return;
                 }
                     
-                
-
                 var command = new PlayerPositionCommand();
                 command.Run(managerLogger, server, inc, playerAndConnection, gameRoom);
+                
+                
             }
         }
     }

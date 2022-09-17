@@ -10,6 +10,7 @@ namespace LetsCreateNetworkGame.OpenGL.Library
     public class Player : Entity
     {
         public string Username { get; set; }
+        public Direction direction { get; set; }
 
         public Player(string username, Position position)
             :base(position)

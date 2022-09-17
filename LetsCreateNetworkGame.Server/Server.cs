@@ -97,5 +97,13 @@ namespace LetsCreateNetworkGame.Server
                 gameRoom.AddEnemy();
             }
         }
+
+        //public void AddMissle()
+        //{
+        //    foreach (var gameRoom in _gameRooms)
+        //    {
+        //        gameRoom.AddMissle();
+        //    }
+        //}
     }
 }

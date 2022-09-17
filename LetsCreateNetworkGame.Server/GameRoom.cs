@@ -33,7 +33,9 @@ namespace LetsCreateNetworkGame.Server
         private Server _server; 
         public string GameRoomId { get; set; }
         public List<PlayerAndConnection> Players { get; set; }
-        public List<Enemy> Enemies { get; set; } 
+        public List<Enemy> Enemies { get; set; }
+        
+        public List<Missle> Missles { get; set; }
 
         public ManagerCamera ManagerCamera { get; private set; }
 
@@ -43,6 +45,7 @@ namespace LetsCreateNetworkGame.Server
             _server = server; 
             Players = new List<PlayerAndConnection>();
             Enemies = new List<Enemy>();
+            Missles = new List<Missle>();
             _cancellationTokenSource = new CancellationTokenSource();
             _task = new Task(Update,_cancellationTokenSource.Token);
             _task.Start();
@@ -87,6 +90,7 @@ namespace LetsCreateNetworkGame.Server
             var list = new List<Entity>(); 
             list.AddRange(Players.Select(p => p.Player));
             list.AddRange(Enemies);
+            list.AddRange(Missles);
             foreach (var entity in list)
             {
                 entity.Update(gameTime);
@@ -108,6 +112,8 @@ namespace LetsCreateNetworkGame.Server
             command.Run(_logger, _server, null, null, this);
             var commandE = new AllEnemiesCommand { CameraUpdate = true };
             commandE.Run(_logger, _server, null, null, this);
+            var commandM = new AllMisslesCommand { CameraUpdate = true };
+            commandM.Run(_logger, _server, null, null, this);
         }
 
         private void WaitForPlayer(double gameTime)
@@ -117,6 +123,16 @@ namespace LetsCreateNetworkGame.Server
                 _logger.AddLogMessage("Room - " + GameRoomId, "Got enough players, start run camera.");
                 _roomState = RoomState.Run;
             }
+        }
+
+        public void AddMissle(Position position, LetsCreateNetworkGame.OpenGL.Library.Direction direction)
+        {
+            var random = new Random();
+            var missle = new Missle(random.Next(0,99999), position, direction);
+            missle.BaseMovement = new MissleMovement(missle.Position, missle.direction);
+            Missles.Add(missle);
+            _logger.AddLogMessage("Room - " + GameRoomId,
+                string.Format("Adding new missle with Unique ID {0}", Missles.Last().UniqueId));
         }
 
         public void AddEnemy()

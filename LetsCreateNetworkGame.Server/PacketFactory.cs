@@ -16,6 +16,8 @@ namespace LetsCreateNetworkGame.Server
                     return new PlayerPositionCommand();
                 case PacketType.AllPlayers:
                     return new AllPlayersCommand();
+                case PacketType.AllMissles:
+                    return new AllMisslesCommand();
                 case PacketType.Input:
                     return new InputCommand();
                 case PacketType.Kick:
