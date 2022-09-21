@@ -56,7 +56,7 @@ namespace LetsCreateNetworkGame.Server.Commands
 
                 case Keys.A:
                     //var random = new Random();
-                    Position post = new Position(playerAndConnection.Player.Position.XPosition,
+                    Position post = new Position(playerAndConnection.Player.Position.XPosition ,
                         playerAndConnection.Player.Position.YPosition,
                         playerAndConnection.Player.Position.ScreenXPosition,
                         playerAndConnection.Player.Position.ScreenYPosition,
@@ -66,9 +66,10 @@ namespace LetsCreateNetworkGame.Server.Commands
                 default:
                     break;
             }
-
+           
             var player = playerAndConnection.Player;
             var position = playerAndConnection.Player.Position;
+
             if (ManagerCollision.CheckCollisionWithEnemies(new Rectangle(position.XPosition + x, position.YPosition + y, 32, 32),
                 gameRoom.Enemies))
             {
@@ -76,6 +77,19 @@ namespace LetsCreateNetworkGame.Server.Commands
                 server.KickPlayer(playerAndConnection.Player.Username, gameRoom.GameRoomId);
 
             }
+          
+             for(int i = 0; i < gameRoom.Enemies.Count; i++) {
+               
+                if (ManagerCollision.CkeckCollisionMissleAndEnemy(new Rectangle(gameRoom.Enemies[i].Position.XPosition, gameRoom.Enemies[i].Position.YPosition , 32, 32),
+                     gameRoom.Missles))
+                {
+                    managerLogger.AddLogMessage("server", string.Format("collied with Missle", name));
+                    server.KickEnemy(gameRoom.Enemies[i].UniqueId, gameRoom.GameRoomId);
+                    gameRoom.Enemies.RemoveAt(i);
+                }
+             }
+             
+
             if (!ManagerCollision.CheckCollision(new Rectangle(position.XPosition + x, position.YPosition + y, 32, 32),
                 player.Username, gameRoom.Players.Select(p => p.Player).ToList()))
             {

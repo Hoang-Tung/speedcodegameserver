@@ -79,6 +79,14 @@ namespace LetsCreateNetworkGame.Server
             command.Run(_managerLogger,this, null, gameGroup.Players.FirstOrDefault(p => p.Player.Username == username),gameGroup);
         }
 
+        public void KickEnemy(int UniqueID, string gameGroupId)
+        {
+            var command = new KickEnemyCommand();
+            command.KickUniqueId = UniqueID;
+            var gameGroup = GetGameRoomById(gameGroupId);
+            command.Run(_managerLogger, this, null, null, gameGroup);
+
+        }
         private GameRoom GetGameRoomById(string id)
         {
             var gameRoom = _gameRooms.FirstOrDefault(g => g.GameRoomId == id);

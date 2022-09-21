@@ -22,6 +22,8 @@ namespace LetsCreateNetworkGame.Server
                     return new InputCommand();
                 case PacketType.Kick:
                     return new KickPlayerCommand();
+                case PacketType.KickEnemy:
+                    return new KickEnemyCommand();
                 default:
                     throw new ArgumentOutOfRangeException("packetType");
             }
