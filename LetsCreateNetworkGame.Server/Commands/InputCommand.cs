@@ -55,13 +55,14 @@ namespace LetsCreateNetworkGame.Server.Commands
                     break;
 
                 case Keys.A:
-                    //var random = new Random();
                     Position post = new Position(playerAndConnection.Player.Position.XPosition ,
                         playerAndConnection.Player.Position.YPosition,
                         playerAndConnection.Player.Position.ScreenXPosition,
                         playerAndConnection.Player.Position.ScreenYPosition,
                         playerAndConnection.Player.Position.Visible);
-                    gameRoom.AddMissle(post, playerAndConnection.Player.direction);
+                    gameRoom.AddMissle(post,
+                        playerAndConnection.Player.direction,
+                        playerAndConnection.Player.Username);
                     break;
                 default:
                     break;
@@ -84,14 +85,21 @@ namespace LetsCreateNetworkGame.Server.Commands
                      gameRoom.Missles))
                 {
                     managerLogger.AddLogMessage("server", string.Format("collied with Missle", name));
+                    playerAndConnection.Player.point += 10;
                     server.KickEnemy(gameRoom.Enemies[i].UniqueId, gameRoom.GameRoomId);
                     gameRoom.Enemies.RemoveAt(i);
                 }
              }
              
 
-            if (!ManagerCollision.CheckCollision(new Rectangle(position.XPosition + x, position.YPosition + y, 32, 32),
-                player.Username, gameRoom.Players.Select(p => p.Player).ToList()))
+            if (!ManagerCollision.CheckCollision(
+                new Rectangle(position.XPosition + x, position.YPosition + y, 32, 32),
+                player.Username, gameRoom.Players.Select(p => p.Player).ToList())
+                &&
+                !ManagerCollision.CheckCollisionObstacle(
+                    new Rectangle(position.XPosition + x, position.YPosition + y, 32, 32),
+                    player.Username, gameRoom.Obstacles)
+                )
             {
                 position.XPosition += x;
                 position.YPosition += y;

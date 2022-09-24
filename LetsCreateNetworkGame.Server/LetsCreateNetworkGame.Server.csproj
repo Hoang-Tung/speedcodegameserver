@@ -65,6 +65,8 @@
   <ItemGroup>
     <Compile Include="Commands\AllEnemiesCommand.cs" />
     <Compile Include="Commands\AllMisslesCommand.cs" />
+    <Compile Include="Commands\AllObstaclesCommand.cs" />
+    <Compile Include="Commands\KickEnemyCommand.cs" />
     <Compile Include="Commands\KickPlayerCommand.cs" />
     <Compile Include="Data.cs" />
     <Compile Include="Forms\MainForm.cs">

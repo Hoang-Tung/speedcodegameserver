@@ -27,6 +27,7 @@ namespace LetsCreateNetworkGame.Server.Commands
             foreach (var p in gameRoom.Players)
             {
                 outmessage.Write(p.Player.Username);
+                outmessage.Write(p.Player.point);
                 outmessage.WriteAllProperties(p.Player.Position);
             }
             server.NetServer.SendMessage(outmessage, gameRoom.Players.Select(p => p.Connection).ToList(), NetDeliveryMethod.ReliableOrdered, 0);

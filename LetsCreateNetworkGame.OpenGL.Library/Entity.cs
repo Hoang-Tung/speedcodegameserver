@@ -11,12 +11,18 @@ namespace LetsCreateNetworkGame.OpenGL.Library
     {
         public Position Position { get; set; }
 
+        public bool isHidden { get; set; }
+
         public Entity(Position position)
         {
             Position = position;
+            isHidden = false;
         }
 
-        public Entity() { }
+        public Entity() 
+        { 
+            isHidden = false;
+        }
 
         public virtual void Update(double gameTime)
         {

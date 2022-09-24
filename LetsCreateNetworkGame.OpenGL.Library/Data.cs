@@ -17,6 +17,8 @@ namespace LetsCreateNetworkGame.OpenGL.Library
         AddEnemy,
         AllEnemies,
         AddMissle,
-        AllMissles
+        AllMissles,
+        KickEnemy,
+        AllObstacles
     }
 }

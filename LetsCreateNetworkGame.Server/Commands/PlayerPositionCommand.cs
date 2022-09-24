@@ -22,6 +22,7 @@ namespace LetsCreateNetworkGame.Server.Commands
                 var outmessage = server.NetServer.CreateMessage();
                 outmessage.Write((byte) PacketType.PlayerPosition);
                 outmessage.Write(playerAndConnection.Player.Username);
+                outmessage.Write(playerAndConnection.Player.point);
                 outmessage.WriteAllProperties(playerAndConnection.Player.Position);
                 server.NetServer.SendMessage(outmessage, gameRoom.Players.Select(p => p.Connection).ToList(),
                     NetDeliveryMethod.ReliableOrdered, 0);

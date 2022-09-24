@@ -15,17 +15,20 @@ namespace LetsCreateNetworkGame.OpenGL.Library
 
         public int UniqueId { get; set; }
 
+        public string owner { get; set; }
+
         public Direction direction { get; set; }
 
         public BaseMovement BaseMovement { get; set; }
 
-        public Missle(int missleId, Position position, Direction direction)  :base(position)
+        public Missle(int missleId, Position position, Direction direction, string username)  :base(position)
         {
             MissleId = missleId;
             base.Position = position;
             UniqueId = new Random().Next(0, 90000);
             this.direction = direction;
             BaseMovement = new MissleMovement(position, direction);
+            owner = username;
         }
 
         public Missle()

@@ -12,15 +12,18 @@ namespace LetsCreateNetworkGame.OpenGL.Library
         public string Username { get; set; }
         public Direction direction { get; set; }
 
+        public int point { get; set; }
         public Player(string username, Position position)
             :base(position)
         {
             Username = username;
+            point = 0;
         }
 
         public Player()
         {
             Position = new Position();
+            point = 0;
         }
 
     }

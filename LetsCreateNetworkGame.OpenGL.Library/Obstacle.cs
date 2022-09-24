@@ -10,30 +10,30 @@ using LetsCreateNetworkGame.OpenGL.Library.AI.Movement;
 
 namespace LetsCreateNetworkGame.OpenGL.Library
 {
-    public class Enemy : Entity
+    public class Obstacle : Entity
     {
-        public int EnemyId { get; set; }
+        public int ObstacleId { get; set; }
 
         public int UniqueId { get; set; }
 
         public BaseMovement BaseMovement { get; set; }
 
-        public Enemy(int enemyId, Position position)             //ramdom
-            :base(position)
+        public Obstacle(int blockId, Position position)             //ramdom
+            : base(position)
         {
-            EnemyId = enemyId;
+            ObstacleId = blockId;
             UniqueId = new Random().Next(0, 90000);
-            BaseMovement = new RandomMovement(Position);
+            BaseMovement = new BlockMovement(position);
         }
 
-        public Enemy()
+        public Obstacle()
         {
             Position = new Position(); // khoi tao enymy
         }
 
         public override void Update(double gameTime)
         {
-            BaseMovement.Update(gameTime);                     // update
+            BaseMovement.Update(gameTime);         // update
         }
     }
 }

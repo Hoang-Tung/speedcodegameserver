@@ -53,7 +53,7 @@ namespace LetsCreateNetworkGame.Server.Forms
         private void btnStartServer_Click(object sender, EventArgs e)
         {
             btnStartServer.Enabled = false;
-            btnStopServer.Enabled = true;
+            btnStopServer.Enabled = true; 
 
             _cancellationTokenSource = new CancellationTokenSource();
             _task = new Task(_server.Run, _cancellationTokenSource.Token);
@@ -90,7 +90,8 @@ namespace LetsCreateNetworkGame.Server.Forms
 
         private void btnAddEnemy_Click(object sender, EventArgs e)
         {
-            _server.AddEnemy(); 
+            _server.AddEnemy();
+            _server.AddObstacle();
         }
 
 

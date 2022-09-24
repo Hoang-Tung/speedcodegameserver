@@ -97,6 +97,14 @@ namespace LetsCreateNetworkGame.Server
             }
             return gameRoom; 
         }
+        
+        public void AddObstacle()
+        {
+            foreach (var gameRooom in _gameRooms)
+            {
+                gameRooom.AddObstacles();
+            }
+        }
 
         public void AddEnemy()
         {
@@ -106,12 +114,5 @@ namespace LetsCreateNetworkGame.Server
             }
         }
 
-        //public void AddMissle()
-        //{
-        //    foreach (var gameRoom in _gameRooms)
-        //    {
-        //        gameRoom.AddMissle();
-        //    }
-        //}
     }
 }

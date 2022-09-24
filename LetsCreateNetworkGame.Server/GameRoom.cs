@@ -36,6 +36,7 @@ namespace LetsCreateNetworkGame.Server
         public List<Enemy> Enemies { get; set; }
         
         public List<Missle> Missles { get; set; }
+        public List<Obstacle> Obstacles { get; set; }
 
         public ManagerCamera ManagerCamera { get; private set; }
 
@@ -46,6 +47,7 @@ namespace LetsCreateNetworkGame.Server
             Players = new List<PlayerAndConnection>();
             Enemies = new List<Enemy>();
             Missles = new List<Missle>();
+            Obstacles = new List<Obstacle>();
             _cancellationTokenSource = new CancellationTokenSource();
             _task = new Task(Update,_cancellationTokenSource.Token);
             _task.Start();
@@ -91,6 +93,7 @@ namespace LetsCreateNetworkGame.Server
             list.AddRange(Players.Select(p => p.Player));
             list.AddRange(Enemies);
             list.AddRange(Missles);
+            list.AddRange(Obstacles);
             foreach (var entity in list)
             {
                 entity.Update(gameTime);
@@ -104,7 +107,11 @@ namespace LetsCreateNetworkGame.Server
                         ManagerCamera.WorldToScreenPosition(new Vector2(position.X, position.Y));
 
                     entityPosition.ScreenXPosition = (int)screenPosition.X;
-                    entityPosition.ScreenYPosition = (int)screenPosition.Y; 
+                    entityPosition.ScreenYPosition = (int)screenPosition.Y;
+                }
+                else
+                {
+                    entity.isHidden = true;
                 }
             }
 
@@ -114,6 +121,19 @@ namespace LetsCreateNetworkGame.Server
             commandE.Run(_logger, _server, null, null, this);
             var commandM = new AllMisslesCommand { CameraUpdate = true };
             commandM.Run(_logger, _server, null, null, this);
+            var commandO = new AllObstaclesCommand { CameraUpdate = true };
+            commandO.Run(_logger, _server, null, null, this);
+        }
+
+        internal void AddObstacles()
+        {
+            var random = new Random();
+            //Generate enemies for test
+            var obstacle = new Obstacle(random.Next(0,999999), new Position(random.Next(0, 600), random.Next(0, 400), 0, 0, true));
+            obstacle.BaseMovement = new BlockMovement(obstacle.Position); 
+            Obstacles.Add(obstacle);
+            _logger.AddLogMessage("Room - " + GameRoomId,
+                string.Format("Adding new enemy with Unique ID {0}", Enemies.Last().UniqueId));
         }
 
         private void WaitForPlayer(double gameTime)
@@ -125,10 +145,10 @@ namespace LetsCreateNetworkGame.Server
             }
         }
 
-        public void AddMissle(Position position, LetsCreateNetworkGame.OpenGL.Library.Direction direction)
+        public void AddMissle(Position position, LetsCreateNetworkGame.OpenGL.Library.Direction direction, string username)
         {
             var random = new Random();
-            var missle = new Missle(random.Next(0,99999), position, direction);
+            var missle = new Missle(random.Next(0,99999), position, direction, username);
             missle.BaseMovement = new MissleMovement(missle.Position, missle.direction);
             Missles.Add(missle);
             _logger.AddLogMessage("Room - " + GameRoomId,

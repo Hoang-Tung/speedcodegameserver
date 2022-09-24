@@ -9,7 +9,7 @@ using System;
 
 namespace LetsCreateNetworkGame.OpenGL.Library.AI.Movement
 {
-    public class RandomMovement : BaseMovement
+    public class BlockMovement : BaseMovement
     {
 
         private double _frequency;
@@ -17,13 +17,13 @@ namespace LetsCreateNetworkGame.OpenGL.Library.AI.Movement
         private Direction _direction;
         private Random _rnd;
 
-        public RandomMovement(Position position) : base(position)   // ramdom huong di chuyen cua enemy
+        public BlockMovement(Position position) : base(position)   // ramdom huong di chuyen cua enemy
         {
             _frequency = 200;
             _count = 0;
             _rnd = new Random();
-            _direction = (Direction) _rnd.Next(0, 3);
-            Speed = 1; 
+            _direction = (Direction)_rnd.Next(0, 3);
+            Speed = 0;
         }
 
         public override void Update(double gameTime) // hien thi
@@ -31,7 +31,7 @@ namespace LetsCreateNetworkGame.OpenGL.Library.AI.Movement
             _count += gameTime;
             if (_count > _frequency)
             {
-                _direction = (Direction) _rnd.Next(0, 3);        
+                _direction = (Direction)_rnd.Next(0, 3);
                 _count = 0;
             }
 
