@@ -15,6 +15,7 @@ namespace LetsCreateNetworkGame.Server
         public Player Player { get; set; }
         public NetConnection Connection { get; set; }
 
+        public string GameRoomID { get; set; }
         public PlayerAndConnection(Player player, NetConnection connection)
         {
             Player = player;

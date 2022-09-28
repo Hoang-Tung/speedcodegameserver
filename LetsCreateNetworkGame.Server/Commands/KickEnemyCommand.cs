@@ -16,7 +16,7 @@ namespace LetsCreateNetworkGame.Server.Commands
         public int KickUniqueId { get; set; }
         public void Run(ManagerLogger managerLogger, Server server, NetIncomingMessage inc, PlayerAndConnection playerAndConnection, GameRoom gameRoom)
         {
-            managerLogger.AddLogMessage("server", string.Format("Kicking EnemyId {0}", KickUniqueId));
+            //managerLogger.AddLogMessage("server", string.Format("Kicking EnemyId {0}", KickUniqueId));
             
             var outmessage = server.NetServer.CreateMessage();
             outmessage.Write((byte)PacketType.KickEnemy);

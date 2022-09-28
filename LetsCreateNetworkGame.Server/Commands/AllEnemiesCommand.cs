@@ -18,18 +18,20 @@ namespace LetsCreateNetworkGame.Server.Commands
 
         public void Run(ManagerLogger managerLogger, Server server, NetIncomingMessage inc, PlayerAndConnection playerAndConnection, GameRoom gameRoom)
         {
-            managerLogger.AddLogMessage("server", "Sending enemy list");
+            //managerLogger.AddLogMessage("server", "Sending enemy list");
             var outmessage = server.NetServer.CreateMessage();
             outmessage.Write((byte)PacketType.AllEnemies);
             outmessage.Write(CameraUpdate);
             outmessage.Write(gameRoom.Enemies.Count);
+            outmessage.Write(gameRoom.GameRoomId);
             foreach (var e in gameRoom.Enemies)
             {
                 outmessage.Write(e.UniqueId);
                 outmessage.Write(e.EnemyId);
                 outmessage.WriteAllProperties(e.Position);
             }
-            server.NetServer.SendMessage(outmessage, gameRoom.Players.Select(p => p.Connection).ToList(), NetDeliveryMethod.ReliableOrdered, 0);
+            if (gameRoom.Players.Select(p => p.Connection).ToList().Count > 0)
+                server.NetServer.SendMessage(outmessage, gameRoom.Players.Select(p => p.Connection).ToList(), NetDeliveryMethod.ReliableOrdered, 0);
         }
     }
 }

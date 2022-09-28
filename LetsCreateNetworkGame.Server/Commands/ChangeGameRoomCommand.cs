@@ -1,18 +1,11 @@
-﻿//------------------------------------------------------
-// 
-// Copyright - (c) - 2014 - Mille Boström 
-//
-// Youtube channel - http://www.speedcoding.net
-//------------------------------------------------------
-
+﻿using LetsCreateNetworkGame.Server.Managers;
+using Lidgren.Network;
 using System.Linq;
 using LetsCreateNetworkGame.OpenGL.Library;
-using LetsCreateNetworkGame.Server.Managers;
-using Lidgren.Network;
 
 namespace LetsCreateNetworkGame.Server.Commands
 {
-    class PlayerPositionCommand : ICommand
+    class ChangeGameRoomCommand : ICommand
     {
         public void Run(ManagerLogger managerLogger, Server server, NetIncomingMessage inc, PlayerAndConnection playerAndConnection, GameRoom gameRoom)
         {
@@ -20,9 +13,10 @@ namespace LetsCreateNetworkGame.Server.Commands
             {
                 //managerLogger.AddLogMessage("server", "Sending out new player position to all in group " + gameRoom.GameRoomId);
                 var outmessage = server.NetServer.CreateMessage();
-                outmessage.Write((byte) PacketType.PlayerPosition);
+                outmessage.Write((byte)PacketType.ChangeGRoom);
                 outmessage.Write(playerAndConnection.Player.Username);
                 outmessage.Write(playerAndConnection.Player.point);
+                outmessage.Write(gameRoom.GameRoomId);
                 outmessage.WriteAllProperties(playerAndConnection.Player.Position);
                 if (gameRoom.Players.Select(p => p.Connection).ToList().Count > 0)
                     server.NetServer.SendMessage(outmessage, gameRoom.Players.Select(p => p.Connection).ToList(),

@@ -39,6 +39,8 @@ namespace LetsCreateNetworkGame.Server
             NetServer.Start();
             Console.WriteLine("Server started...");
             _managerLogger.AddLogMessage("Server","Server started...");
+            AddGameRoom(1);
+            AddGameRoom(2);
             while (true)
             {
                 NetIncomingMessage inc;
@@ -92,18 +94,32 @@ namespace LetsCreateNetworkGame.Server
             var gameRoom = _gameRooms.FirstOrDefault(g => g.GameRoomId == id);
             if (gameRoom == null)
             {
-                gameRoom = new GameRoom(id, this, _managerLogger);
+                gameRoom = new GameRoom(id, this, _managerLogger, 1);
                 _gameRooms.Add(gameRoom);
             }
             return gameRoom; 
         }
         
-        public void AddObstacle()
+        public GameRoom GetGameRoomByLevel(int level)
         {
-            foreach (var gameRooom in _gameRooms)
-            {
-                gameRooom.AddObstacles();
-            }
+            var gameRoom = _gameRooms.FirstOrDefault(g => g.RoomLevel == level);
+            
+            return gameRoom;
+        }
+
+        private void AddGameRoom(int level)
+        {
+            var gameRoom = new GameRoom((new Random()).Next(0, 9999).ToString(), this, _managerLogger, level);
+            _gameRooms.Add(gameRoom);
+        }
+
+        public string ChangeGameRoom(int level, PlayerAndConnection playerAndConnection)
+        {
+            string grID = "";
+            var gameRoom = _gameRooms.FirstOrDefault(gr => gr.RoomLevel == level);
+            gameRoom.Players.Add(playerAndConnection);
+            grID = gameRoom.GameRoomId;
+            return grID;
         }
 
         public void AddEnemy()

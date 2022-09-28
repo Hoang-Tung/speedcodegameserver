@@ -25,7 +25,7 @@ namespace LetsCreateNetworkGame.Server.Commands
             playerAndConnection = gameRoom.Players.FirstOrDefault(p => p.Player.Username == name);
             if (playerAndConnection == null)
             {
-                managerLogger.AddLogMessage("server", string.Format("Could not find player with name {0}", name));
+                //managerLogger.AddLogMessage("server", string.Format("Could not find player with name {0}", name));
                 return;
             }
 
@@ -63,6 +63,16 @@ namespace LetsCreateNetworkGame.Server.Commands
                     gameRoom.AddMissle(post,
                         playerAndConnection.Player.direction,
                         playerAndConnection.Player.Username);
+                    var player1 = playerAndConnection.Player;
+                    PlayerAndConnection newPlayer = new PlayerAndConnection(player1, playerAndConnection.Connection);
+                    server.ChangeGameRoom(2, newPlayer);
+                    var newgameRoom = server.GetGameRoomByLevel(2);
+                    var command = new ChangeGameRoomCommand();
+                    command.Run(managerLogger, server, inc, newPlayer, newgameRoom);
+                    gameRoom.Players.Remove(playerAndConnection);
+                    //var commandKich = new KickPlayerCommand();
+                    //commandKich.Run(managerLogger, server, inc, newPlayer, gameRoom);
+                    return;
                     break;
                 default:
                     break;
@@ -74,7 +84,7 @@ namespace LetsCreateNetworkGame.Server.Commands
             if (ManagerCollision.CheckCollisionWithEnemies(new Rectangle(position.XPosition + x, position.YPosition + y, 32, 32),
                 gameRoom.Enemies))
             {
-                managerLogger.AddLogMessage("server", string.Format("collied with enemy", name));
+                //managerLogger.AddLogMessage("server", string.Format("collied with enemy", name));
                 server.KickPlayer(playerAndConnection.Player.Username, gameRoom.GameRoomId);
 
             }
@@ -84,8 +94,17 @@ namespace LetsCreateNetworkGame.Server.Commands
                 if (ManagerCollision.CkeckCollisionMissleAndEnemy(new Rectangle(gameRoom.Enemies[i].Position.XPosition, gameRoom.Enemies[i].Position.YPosition , 32, 32),
                      gameRoom.Missles))
                 {
-                    managerLogger.AddLogMessage("server", string.Format("collied with Missle", name));
+                    //managerLogger.AddLogMessage("server", string.Format("collied with Missle", name));
                     playerAndConnection.Player.point += 10;
+                    if(playerAndConnection.Player.point > 9)
+                    {
+                        PlayerAndConnection newPlayer = new PlayerAndConnection(player, playerAndConnection.Connection);
+                        server.ChangeGameRoom(2, newPlayer);
+                        gameRoom.Players.Remove(playerAndConnection);
+                        var newgameRoom = server.GetGameRoomByLevel(2);
+                        var command = new PlayerPositionCommand();
+                        command.Run(managerLogger, server, inc, playerAndConnection, newgameRoom);
+                    }
                     server.KickEnemy(gameRoom.Enemies[i].UniqueId, gameRoom.GameRoomId);
                     gameRoom.Enemies.RemoveAt(i);
                 }

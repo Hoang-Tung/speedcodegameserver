@@ -91,7 +91,7 @@ namespace LetsCreateNetworkGame.Server.Forms
         private void btnAddEnemy_Click(object sender, EventArgs e)
         {
             _server.AddEnemy();
-            _server.AddObstacle();
+            //_server.AddObstacle();
         }
 
 

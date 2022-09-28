@@ -15,13 +15,14 @@ namespace LetsCreateNetworkGame.Server.Commands
     {
         public void Run(ManagerLogger managerLogger, Server server, NetIncomingMessage inc, PlayerAndConnection playerAndConnection, GameRoom gameRoom)
         {
-            managerLogger.AddLogMessage("server",string.Format("Kicking {0}",playerAndConnection.Player.Username));
+            //managerLogger.AddLogMessage("server",string.Format("Kicking {0}",playerAndConnection.Player.Username));
             var outmessage = server.NetServer.CreateMessage();
             outmessage.Write((byte)PacketType.Kick);
             outmessage.Write(playerAndConnection.Player.Username);
+            outmessage.Write(gameRoom.GameRoomId);
             server.NetServer.SendToAll(outmessage, NetDeliveryMethod.ReliableOrdered);
             //Kick player
-            playerAndConnection.Connection.Disconnect("Bye bye, you're kicked.");
+            //playerAndConnection.Connection.Disconnect("Bye bye, you're kicked.");
         }
     }
 }

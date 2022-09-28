@@ -18,7 +18,7 @@ namespace LetsCreateNetworkGame.Server.Commands
 
         public void Run(ManagerLogger managerLogger, Server server, NetIncomingMessage inc, PlayerAndConnection playerAndConnection, GameRoom gameRoom)
         {
-            managerLogger.AddLogMessage("server", "Sending enemy list");
+            //managerLogger.AddLogMessage("server", "Sending enemy list");
             var outmessage = server.NetServer.CreateMessage();
             outmessage.Write((byte)PacketType.AllObstacles);
             outmessage.Write(CameraUpdate);
@@ -29,7 +29,8 @@ namespace LetsCreateNetworkGame.Server.Commands
                 outmessage.Write(e.ObstacleId);
                 outmessage.WriteAllProperties(e.Position);
             }
-            server.NetServer.SendMessage(outmessage, gameRoom.Players.Select(p => p.Connection).ToList(), NetDeliveryMethod.ReliableOrdered, 0);
+            if (gameRoom.Players.Select(p => p.Connection).ToList().Count > 0)
+                server.NetServer.SendMessage(outmessage, gameRoom.Players.Select(p => p.Connection).ToList(), NetDeliveryMethod.ReliableOrdered, 0);
         }
     }
 }

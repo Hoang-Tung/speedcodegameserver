@@ -15,6 +15,7 @@ using LetsCreateNetworkGame.OpenGL.Library.AI.Movement;
 using LetsCreateNetworkGame.Server.Commands;
 using LetsCreateNetworkGame.Server.Managers;
 using Microsoft.Xna.Framework;
+using System.IO;
 
 namespace LetsCreateNetworkGame.Server
 {
@@ -34,13 +35,14 @@ namespace LetsCreateNetworkGame.Server
         public string GameRoomId { get; set; }
         public List<PlayerAndConnection> Players { get; set; }
         public List<Enemy> Enemies { get; set; }
-        
+        public int[,] map = new int[20,12];
         public List<Missle> Missles { get; set; }
         public List<Obstacle> Obstacles { get; set; }
 
+        public int RoomLevel { get; set; }
         public ManagerCamera ManagerCamera { get; private set; }
 
-        public GameRoom(string gameRoomId, Server server,  ManagerLogger logger)
+        public GameRoom(string gameRoomId, Server server,  ManagerLogger logger, int level)
         {
             GameRoomId = gameRoomId;
             _server = server; 
@@ -53,12 +55,42 @@ namespace LetsCreateNetworkGame.Server
             _task.Start();
             _logger = logger; 
             ManagerCamera = new ManagerCamera();
+            RoomLevel = level;
+            MapInitial();
+        }
+
+        public void MapInitial()
+        {
+            int blockid = 0;
+            string[] text;
+            for (int i = 0; i< 12; i++)
+            {
+                if(RoomLevel == 1)
+                    text = File.ReadAllLines(@".\MapLevel1.txt");
+                else
+                {
+                    text = File.ReadAllLines(@".\MapLevel2.txt");
+                    _roomState = RoomState.Run;
+                }
+                    
+                int j = 0;
+                foreach (char ch in text[i])
+                {
+                    map[j, i] = (int)char.GetNumericValue(ch);
+                    if (map[j, i] == 1)
+                    {
+                        AddObstacles(blockid, j, i);
+                        blockid++;
+                    }
+                    j++;
+                }
+            }
         }
 
         private void Update()
         {
             var lastIterationTime = DateTime.Now;
-            var stepSize = TimeSpan.FromSeconds(0.01); 
+            var stepSize = TimeSpan.FromSeconds(0.02); 
             while (true)
             {
                 if (_cancellationTokenSource.IsCancellationRequested)
@@ -125,15 +157,14 @@ namespace LetsCreateNetworkGame.Server
             commandO.Run(_logger, _server, null, null, this);
         }
 
-        internal void AddObstacles()
+        internal void AddObstacles(int uniqueid ,int x, int y)
         {
             var random = new Random();
             //Generate enemies for test
-            var obstacle = new Obstacle(random.Next(0,999999), new Position(random.Next(0, 600), random.Next(0, 400), 0, 0, true));
+            var obstacle = new Obstacle(random.Next(0,999999), new Position(x * 40, y * 40, 0, 0, true));
+            obstacle.UniqueId = uniqueid;
             obstacle.BaseMovement = new BlockMovement(obstacle.Position); 
             Obstacles.Add(obstacle);
-            _logger.AddLogMessage("Room - " + GameRoomId,
-                string.Format("Adding new enemy with Unique ID {0}", Enemies.Last().UniqueId));
         }
 
         private void WaitForPlayer(double gameTime)
@@ -151,8 +182,8 @@ namespace LetsCreateNetworkGame.Server
             var missle = new Missle(random.Next(0,99999), position, direction, username);
             missle.BaseMovement = new MissleMovement(missle.Position, missle.direction);
             Missles.Add(missle);
-            _logger.AddLogMessage("Room - " + GameRoomId,
-                string.Format("Adding new missle with Unique ID {0}", Missles.Last().UniqueId));
+            //_logger.AddLogMessage("Room - " + GameRoomId,
+            //    string.Format("Adding new missle with Unique ID {0}", Missles.Last().UniqueId));
         }
 
         public void AddEnemy()

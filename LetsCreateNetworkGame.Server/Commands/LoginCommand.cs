@@ -23,7 +23,7 @@ namespace LetsCreateNetworkGame.Server.Commands
             {
                 inc.SenderConnection.Approve();
                 managerLogger.AddLogMessage("server", "..connection accpeted.");
-                playerAndConnection = CreatePlayer(inc, gameRoom.Players, gameRoom.ManagerCamera);
+                playerAndConnection = CreatePlayer(inc, gameRoom.Players, gameRoom.ManagerCamera, gameRoom);
                 var outmsg = server.NetServer.CreateMessage();
                 outmsg.Write((byte)PacketType.Login);
                 outmsg.Write(gameRoom.Players.Count);
@@ -44,13 +44,19 @@ namespace LetsCreateNetworkGame.Server.Commands
             }
         }
 
-        private PlayerAndConnection CreatePlayer(NetIncomingMessage inc, List<PlayerAndConnection> players, ManagerCamera managerCamera)
-        {
+        private PlayerAndConnection CreatePlayer(NetIncomingMessage inc, List<PlayerAndConnection> players, ManagerCamera managerCamera, GameRoom gameRoom)        {
             var random = new Random();
+            Position position;
+            do
+            {
+                position = new Position { XPosition = random.Next(0, 750), YPosition = random.Next(0, 420) };
+            } while (ManagerCollision.CheckCollisionObstacle(
+                    new Rectangle(position.XPosition, position.YPosition, 32, 32),
+                    "new_player", gameRoom.Obstacles));
             var player = new Player
             {
                 Username = inc.ReadString(),
-                Position = new Position {XPosition = random.Next(0, 750), YPosition = random.Next(0, 420) }
+                Position = position
             };
             var playerVectorPosition = new Vector2(player.Position.XPosition, player.Position.YPosition);
             var screenPosition = managerCamera.WorldToScreenPosition(playerVectorPosition);

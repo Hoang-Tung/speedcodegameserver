@@ -66,6 +66,7 @@
     <Compile Include="Commands\AllEnemiesCommand.cs" />
     <Compile Include="Commands\AllMisslesCommand.cs" />
     <Compile Include="Commands\AllObstaclesCommand.cs" />
+    <Compile Include="Commands\ChangeGameRoomCommand.cs" />
     <Compile Include="Commands\KickEnemyCommand.cs" />
     <Compile Include="Commands\KickPlayerCommand.cs" />
     <Compile Include="Data.cs" />
@@ -107,6 +108,9 @@
       <Project>{e1b8a8a0-c9b0-422c-87af-a746bf95d4f3}</Project>
       <Name>LetsCreateNetworkGame.OpenGL.Library</Name>
     </ProjectReference>
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="MapLevel1.txt" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
